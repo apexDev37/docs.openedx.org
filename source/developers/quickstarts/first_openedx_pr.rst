@@ -180,35 +180,24 @@ This is what you'll do next.
 Mounting edx-platform
 =====================
 
-To have Tutor run your local fork of edx-platform, you have to tell it to do so
-on start up.  It is a simple CLI parameter that points Tutor to the directory where
-the code lives.
+To have Tutor run your local fork of the ``edx-platform``, you have to tell it to use it. We will use the ``tutor mounts`` command set, which manages bind-mounted host directories.
 
-As a first step, fire up a one-off LMS container while mounting your local
-checkout:
+Let's point Tutor to the directory where the code lives:
 
 .. code-block:: bash
 
-   tutor dev run --mount=./edx-platform lms bash
+   tutor mounts add ./edx-platform
 
-Now within the container, install python requirements and rebuild static assets
-for your local checkout:
+This will implicitly bind-mount the local ``edx-platform`` fork to the appropriate containers. In addition, the ``edx-platform`` will also automatically be added to the Docker image at build time.
 
-.. code-block:: bash
-
-   pip install -e .
-   npm install
-   openedx-assets build --env=dev
-   exit
-
-After exiting the one-off container, restart the LMS with the local checkout
-mounted:
+Let's now rebuild our “openedx-dev” Docker image with our mounted local fork and launch the developer platform setup process again:
 
 .. code-block:: bash
 
-   tutor dev start --mount=./edx-platform lms
+   tutor images build openedx-dev
+   tutor dev launch
 
-From this point on, whatever changes you make to the code in your clone should
+Once setup is complete, the platform will be running in the background. Use the command ``tutor dev status`` to view the status of your running containers. From this point on, whatever changes you make to the code in your clone should
 be visible in your local LMS instance immediately.
 
 Exercise: Update the Learner Dashboard
